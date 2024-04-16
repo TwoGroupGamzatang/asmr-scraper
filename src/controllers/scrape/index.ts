@@ -28,6 +28,8 @@ scrapeRouter.post(
             res.status(StatusCodes.OK).json({
                 content: existScrapedContent.content,
             });
+
+            return;
         }
 
         const { origin } = new URL(url);
@@ -44,7 +46,7 @@ scrapeRouter.post(
 
         await scrapedContent.save();
 
-        res.status(StatusCodes.OK).json({ content: scrapedResult.content });
+        res.status(StatusCodes.OK).json({ scrapedResult });
     })
 );
 

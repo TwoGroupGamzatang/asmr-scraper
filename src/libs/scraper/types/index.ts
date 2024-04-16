@@ -6,8 +6,8 @@ export interface ScrapedResult extends Metadata, Content {}
 
 export interface Metadata {
     title: string;
-    writer: string;
-    writedAt: Date;
+    writer?: string;
+    writedAt?: Date;
 }
 
 export interface Content {
