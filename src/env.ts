@@ -54,9 +54,6 @@ export const env = {
     db: {
         host: getOsEnv('MONGO_HOST'),
     },
-    openAI: {
-        apiKey: getOsEnv('OPENAI_API_KEY'),
-    },
     swagger: {
         enabled: toBool(getOsEnv('SWAGGER_ENABLED')),
         route: getOsEnv('SWAGGER_ROUTE'),
