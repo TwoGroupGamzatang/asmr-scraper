@@ -52,6 +52,13 @@ export class ErrorCode {
         StatusCodes.INTERNAL_SERVER_ERROR
     );
 
+    // Content
+    public static readonly contentNotFound = new ErrorCode(
+        'C01',
+        'Content Not Found.',
+        StatusCodes.NOT_FOUND
+    );
+
     // External API
     public static readonly summarizeFailed = new ErrorCode(
         'E01',

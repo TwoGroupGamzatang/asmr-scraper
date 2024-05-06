@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import scrapeRouter from './scrape';
+import contentRouter from './contents';
 
 interface Route {
     path: string;
@@ -12,6 +13,10 @@ const routes: Route[] = [
     {
         path: '/scrape',
         router: scrapeRouter,
+    },
+    {
+        path: '/content',
+        router: contentRouter,
     },
 ];
 
