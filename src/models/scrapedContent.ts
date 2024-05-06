@@ -15,6 +15,10 @@ const scrapedContentSchema = new mongoose.Schema({
     // Article Content
     content: { type: String, required: true },
 
+    // Summary
+    summary: { type: String, required: false },
+    readTime: { type: Number, required: false },
+
     // Scraped Metadata
     scrapedAt: { type: Date, default: Date.now },
 });
