@@ -52,6 +52,13 @@ export class ErrorCode {
         StatusCodes.INTERNAL_SERVER_ERROR
     );
 
+    // External API
+    public static readonly summarizeFailed = new ErrorCode(
+        'E01',
+        'Summarize Failed.',
+        StatusCodes.INTERNAL_SERVER_ERROR
+    );
+
     constructor(
         public readonly code: string,
         public readonly message: string,
