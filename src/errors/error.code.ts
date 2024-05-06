@@ -51,12 +51,22 @@ export class ErrorCode {
         'Scrape Failed.',
         StatusCodes.INTERNAL_SERVER_ERROR
     );
+    public static readonly alreadyScraped = new ErrorCode(
+        'S03',
+        'Already Scraped.',
+        StatusCodes.BAD_REQUEST
+    );
 
     // Content
     public static readonly contentNotFound = new ErrorCode(
         'C01',
         'Content Not Found.',
         StatusCodes.NOT_FOUND
+    );
+    public static readonly onlyDeleteMyContent = new ErrorCode(
+        'C02',
+        "Cannot Delete Other User's Content.",
+        StatusCodes.FORBIDDEN
     );
 
     // External API

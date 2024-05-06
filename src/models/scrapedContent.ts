@@ -21,10 +21,12 @@ const scrapedContentSchema = new mongoose.Schema({
 
     // Scraped Metadata
     scrapedAt: { type: Date, default: Date.now },
+
+    isDeleted: { type: Boolean, default: false },
 });
 
-scrapedContentSchema.index({ userId: 1 });
-scrapedContentSchema.index({ url: 1 }, { unique: true });
+scrapedContentSchema.index({ userId: 1, deleted: 1 });
+scrapedContentSchema.index({ url: 1, userId: 1, isDeleted: 1 });
 
 export const ScrapedContent = mongoose.model(
     'ScrapedContent',

@@ -1,23 +1,25 @@
 import { Router } from 'express';
-import { Logger } from '../../libs/logger';
 import catchAsync from '../../utils/catchAsync';
 import { FilterQuery } from 'mongoose';
 import { ScrapedContent } from '../../models/scrapedContent';
 import { StatusCodes } from 'http-status-codes';
 import { ContentNotFoundException } from '../../errors/exceptions/content/content-not-found.exception';
+import { OnlyDeleteMyContentException } from '../../errors/exceptions/content/only-delete-my-content.exception';
 
 const contentRouter = Router();
-const logger = new Logger(__filename);
 
 contentRouter
     .get(
         '/:id',
         catchAsync(async (req, res) => {
             const { id } = req.params;
-            const scrapedContent = await ScrapedContent.findById(id, {
-                userId: 0,
-                __v: 0,
-            });
+            const scrapedContent = await ScrapedContent.findOne(
+                { _id: id, isDeleted: false },
+                {
+                    userId: 0,
+                    __v: 0,
+                }
+            );
 
             if (!scrapedContent) {
                 throw new ContentNotFoundException();
@@ -40,8 +42,13 @@ contentRouter
                 sort: { scrapedAt: -1 },
             };
 
-            const query: FilterQuery<{ userId: string; title?: string }> = {
+            const query: FilterQuery<{
+                userId: string;
+                title?: string;
+                isDeleted: boolean;
+            }> = {
                 userId,
+                isDeleted: false,
             };
             if (title) {
                 query['title'] = { $regex: new RegExp(title as string, 'i') };
@@ -62,6 +69,28 @@ contentRouter
                 maxPage,
                 totalCount,
             });
+        })
+    )
+    .delete(
+        '/:id',
+        catchAsync(async (req, res) => {
+            const { id } = req.params;
+            const userId = req.header('X-ASMR-User-Id');
+
+            const scrapedContent = await ScrapedContent.findById(id);
+            if (!scrapedContent) {
+                throw new ContentNotFoundException();
+            }
+
+            if (scrapedContent.userId !== userId) {
+                // 요청자의 userId와 문서의 userId가 일치하지 않는 경우
+                throw new OnlyDeleteMyContentException();
+            }
+
+            scrapedContent.isDeleted = true;
+            await scrapedContent.save();
+
+            res.status(StatusCodes.NO_CONTENT).send();
         })
     );
 

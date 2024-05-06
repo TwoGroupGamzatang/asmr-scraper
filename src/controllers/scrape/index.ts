@@ -7,6 +7,7 @@ import catchAsync from '../../utils/catchAsync';
 import { ScrapedContent } from '../../models/scrapedContent';
 import { ScraperFactory } from '../../libs/scraper/scraper.factory';
 import { getAISummarize } from '../../libs/summarize';
+import { AlreadyScrapedException } from '../../errors/exceptions/scraper/already-scraped.exception';
 
 const scrapeRouter = Router();
 const logger = new Logger(__filename);
@@ -19,10 +20,18 @@ scrapeRouter.post(
         const { url } = req.body as ScrapeRequest;
         logger.info(`${userId} request summarize for ${url}`);
 
-        const existScrapedContent = await ScrapedContent.findOne({
+        const existScrapedContents = await ScrapedContent.find({
             url: url,
         });
 
+        const myScrapedContent = existScrapedContents.find(
+            (scrapedContent) => scrapedContent.userId === userId
+        );
+        if (myScrapedContent) {
+            throw new AlreadyScrapedException();
+        }
+
+        const existScrapedContent = existScrapedContents?.[0];
         if (existScrapedContent) {
             // TODO: 공통 조회를 분모로 추천 이벤트 발송
 
