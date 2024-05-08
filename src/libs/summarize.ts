@@ -7,7 +7,8 @@ const logger = new Logger(__filename);
 export async function getAISummarize(
     url: string,
     originalText: string,
-    readTime: number
+    readTime: number,
+    userId?: string
 ) {
     try {
         const response = await axios.post(
@@ -17,9 +18,19 @@ export async function getAISummarize(
                 url,
                 originalText,
                 readTime,
+            },
+            {
+                headers: {
+                    'X-ASMR-User-Id': userId,
+                },
             }
         );
-        return response.data;
+
+        if (typeof response.data === 'object') {
+            return JSON.stringify(response.data);
+        } else {
+            return response.data;
+        }
     } catch (error: any) {
         logger.error(error);
         throw new SummarizeFailedException();

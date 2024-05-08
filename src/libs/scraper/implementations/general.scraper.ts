@@ -21,8 +21,9 @@ export class GeneralScraper implements Scraper {
                 throw new ScrapeFailedException();
             }
 
+            // TODO: 여전히 body에서 script, header, footer, nav, style를 정확히 제거하지 못하고 있으니 수정 바람
             const content = await page.$$eval(
-                'body *:not(script)',
+                'body:not(script):not(header):not(footer):not(nav):not(style)',
                 (elements) =>
                     elements
                         .map((element) => element.textContent)
