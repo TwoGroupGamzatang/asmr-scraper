@@ -22,11 +22,11 @@ app.use(morgan('short'));
 banner(log);
 
 // Health Check
-app.get('/scraper/health', async (req, res) => {
+app.get('/article/health', async (req, res) => {
     res.send('OK');
 });
 
-app.use('/scraper', apiRouter);
+app.use('/article', apiRouter);
 
 // Handling 404
 app.use((req, res, next) => {

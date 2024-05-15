@@ -1,7 +1,7 @@
 {
-  "name": "asmr-scraper-api",
+  "name": "asmr-article-api",
   "version": "0.1.0",
-  "description": "scraper service for asmr project",
+  "description": "article service for asmr project",
   "main": "index.js",
   "scripts": {
     "test": "jest",
