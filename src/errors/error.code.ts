@@ -69,6 +69,13 @@ export class ErrorCode {
         StatusCodes.FORBIDDEN
     );
 
+    // Memo
+    public static readonly memoNotFound = new ErrorCode(
+        'M01',
+        'Memo Not Found.',
+        StatusCodes.NOT_FOUND
+    );
+
     // External API
     public static readonly summarizeFailed = new ErrorCode(
         'E01',
