@@ -8,6 +8,7 @@ export interface Metadata {
     title: string;
     writer?: string;
     writedAt?: Date;
+    tags?: string[];
 }
 
 export interface Content {

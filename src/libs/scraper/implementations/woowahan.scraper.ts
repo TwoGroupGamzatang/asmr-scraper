@@ -35,10 +35,15 @@ export class WoowahanScraper implements Scraper {
                     elements.map((element) => element.textContent).join(' ')
             );
 
+            const tags = await page.$$eval('.cat-tag', (elements) =>
+                elements.map((element) => element.textContent?.trim())
+            );
+
             return {
                 title: title,
                 writer: nullToUndefined(writer),
                 writedAt: writedAt,
+                tags: tags.filter(Boolean) as string[],
                 content: content,
             };
         } catch (error: any) {

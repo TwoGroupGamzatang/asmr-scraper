@@ -9,6 +9,7 @@ const scrapedContentSchema = new mongoose.Schema({
 
     // Article Metadata
     title: { type: String, required: true },
+    tags: { type: [String], required: false },
     writer: { type: String, required: false },
     writedAt: { type: Date, required: false },
 

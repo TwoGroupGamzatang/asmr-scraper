@@ -77,6 +77,7 @@ scrapeRouter.post(
             title: scrapedResult.title,
             content: scrapedResult.content,
             summary: summary,
+            tags: scrapedResult.tags,
             readTime: 5,
         });
         await scrapedContent.save();
