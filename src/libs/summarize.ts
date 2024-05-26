@@ -27,12 +27,25 @@ export async function getAISummarize(
         );
 
         if (typeof response.data === 'object') {
-            return JSON.stringify(response.data);
+            return {
+                summary: JSON.stringify(response.data),
+                tags: extractTagsFromSummary(response.data.summary),
+            };
         } else {
-            return response.data;
+            return {
+                summary: response.data,
+            };
         }
     } catch (error: any) {
         logger.error(error);
         throw new SummarizeFailedException();
     }
+}
+
+function extractTagsFromSummary(summary: string): string[] {
+    const tagExtractionStart =
+        summary.indexOf('Tag extraction\n') + 'Tag extraction\n'.length;
+    const tagExtractionEnd = summary.indexOf('\n\n', tagExtractionStart);
+    const tagExtraction = summary.slice(tagExtractionStart, tagExtractionEnd);
+    return tagExtraction.split(', ').map((tag) => tag.trim());
 }

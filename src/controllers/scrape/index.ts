@@ -8,6 +8,7 @@ import { ScrapedContent } from '../../models/scrapedContent';
 import { ScraperFactory } from '../../libs/scraper/scraper.factory';
 import { getAISummarize } from '../../libs/summarize';
 import { AlreadyScrapedException } from '../../errors/exceptions/scraper/already-scraped.exception';
+import { combineArrays } from '../../utils/array';
 
 const scrapeRouter = Router();
 const logger = new Logger(__filename);
@@ -62,7 +63,7 @@ scrapeRouter.post(
         const scraper = ScraperFactory.create(origin);
         const scrapedResult = await scraper.scrape(url);
         // TODO: 현재는 기본값을 5로 지정하지만 추후에는 사용자 인증 시에 사용자의 preference 값 반영
-        const summary = await getAISummarize(
+        const { summary, tags: aiTags } = await getAISummarize(
             url,
             scrapedResult.content,
             5,
@@ -77,7 +78,7 @@ scrapeRouter.post(
             title: scrapedResult.title,
             content: scrapedResult.content,
             summary: summary,
-            tags: scrapedResult.tags,
+            tags: combineArrays(scrapedResult.tags, aiTags),
             readTime: 5,
         });
         await scrapedContent.save();
