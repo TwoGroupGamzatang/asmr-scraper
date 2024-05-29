@@ -41,9 +41,24 @@ scrapeRouter.post(
                 existScrapedContent.userId &&
                 existScrapedContent.userId !== userId
             ) {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                const { _id, ...rest } = existScrapedContent.toObject();
+                if (!rest.summary || !rest.tags) {
+                    const { summary, tags: aiTags } = await getAISummarize(
+                        url,
+                        rest.content,
+                        5,
+                        userId
+                    );
+
+                    rest.summary = summary;
+                    rest.tags = combineArrays(rest.tags, aiTags);
+                }
+
                 const scrapedContent = new ScrapedContent({
-                    ...existScrapedContent,
+                    ...rest,
                     userId,
+                    scrapedAt: Date.now(),
                 });
 
                 await scrapedContent.save();
