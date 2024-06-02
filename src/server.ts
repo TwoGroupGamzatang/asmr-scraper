@@ -9,6 +9,7 @@ import { banner } from './libs/banner';
 import { globalErrorHandler } from './middlewares/error';
 import { Logger } from './libs/logger';
 import { connectMongoDB } from './libs/mongoose';
+import parseJwtMiddleware from './middlewares/parseJwt';
 
 const app = express();
 const log = new Logger(__filename);
@@ -22,11 +23,13 @@ app.use(morgan('short'));
 banner(log);
 
 // Health Check
-app.get('/article/health', async (req, res) => {
+app.get('/api/article/health', async (req, res) => {
     res.send('OK');
 });
 
-app.use('/article', apiRouter);
+app.use(parseJwtMiddleware);
+
+app.use('/api/article', apiRouter);
 
 // Handling 404
 app.use((req, res, next) => {

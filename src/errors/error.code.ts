@@ -33,6 +33,18 @@ export class ErrorCode {
         StatusCodes.INTERNAL_SERVER_ERROR
     );
 
+    // Auth
+    public static readonly tokenNotFound = new ErrorCode(
+        'A01',
+        'Token Not Found.',
+        StatusCodes.FORBIDDEN
+    );
+    public static readonly invalidToken = new ErrorCode(
+        'A02',
+        'Invalid Token.',
+        StatusCodes.FORBIDDEN
+    );
+
     // User
     public static readonly userAccessDenied = new ErrorCode(
         'U01',
