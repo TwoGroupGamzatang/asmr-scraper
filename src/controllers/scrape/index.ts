@@ -17,7 +17,7 @@ scrapeRouter.post(
     '/',
     validate(scrapeRequestSchema),
     catchAsync(async (req, res) => {
-        const userId = req.header('X-ASMR-User-Id');
+        const userId = req.user.id;
         const { url } = req.body as ScrapeRequest;
         logger.info(`${userId} request summarize for ${url}`);
 

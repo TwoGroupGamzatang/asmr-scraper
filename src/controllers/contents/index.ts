@@ -12,9 +12,10 @@ contentRouter
     .get(
         '/:id',
         catchAsync(async (req, res) => {
+            const userId = req.user.id;
             const { id } = req.params;
             const scrapedContent = await ScrapedContent.findOne(
-                { _id: id, isDeleted: false },
+                { _id: id, userId: userId, isDeleted: false },
                 {
                     userId: 0,
                     __v: 0,
@@ -31,7 +32,7 @@ contentRouter
     .get(
         '/',
         catchAsync(async (req, res) => {
-            const userId = req.header('X-ASMR-User-Id');
+            const userId = req.user.id;
             const { page = 1, limit = 10, title } = req.query;
 
             const options = {
@@ -75,7 +76,7 @@ contentRouter
         '/:id',
         catchAsync(async (req, res) => {
             const { id } = req.params;
-            const userId = req.header('X-ASMR-User-Id');
+            const userId = req.user.id;
 
             const scrapedContent = await ScrapedContent.findById(id);
             if (!scrapedContent) {

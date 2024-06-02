@@ -13,7 +13,7 @@ export async function getAISummarize(
     try {
         const response = await axios.post(
             // TODO: 추후에는 환경변수로 변경
-            'http://localhost:5002/openai/summary',
+            'http://localhost:5002/api/openai/summary',
             {
                 url,
                 originalText,

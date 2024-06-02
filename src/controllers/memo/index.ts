@@ -10,7 +10,7 @@ memoRouter
     .post(
         '/:contentId',
         catchAsync(async (req, res) => {
-            const userId = req.header('X-ASMR-User-Id') as string;
+            const userId = req.user.id;
             const { contentId } = req.params;
             const { content } = req.body as { content: string };
 
@@ -36,15 +36,20 @@ memoRouter
 
             res.status(201).json({
                 count: scrapedContent.memos.length,
-                memos: scrapedContent.memos,
+                memos: scrapedContent.memos.map((memo) => ({
+                    _id: memo._id,
+                    content: memo.content,
+                    createdAt: memo.createdAt,
+                    updatedAt: memo.updatedAt,
+                })),
             });
         })
     )
     .get(
         '/:contentId',
         catchAsync(async (req, res) => {
+            const userId = req.user.id;
             const { contentId } = req.params;
-            const userId = req.header('X-ASMR-User-Id') as string;
 
             const scrapedContent = await ScrapedContent.findOne({
                 _id: contentId,
@@ -61,17 +66,27 @@ memoRouter
 
             res.status(200).json({
                 count: memos.length,
-                memos,
+                memos: memos.map((memo) => ({
+                    _id: memo._id,
+                    content: memo.content,
+                    createdAt: memo.createdAt,
+                    updatedAt: memo.updatedAt,
+                })),
             });
         })
     )
     .put(
         '/:contentId/:memoId',
         catchAsync(async (req, res) => {
+            const userId = req.user.id;
             const { contentId, memoId } = req.params;
             const { content } = req.body;
 
-            const scrapedContent = await ScrapedContent.findById(contentId);
+            const scrapedContent = await ScrapedContent.findOne({
+                _id: contentId,
+                userId,
+                isDeleted: false,
+            });
             if (!scrapedContent) {
                 throw new ContentNotFoundException();
             }
@@ -92,9 +107,14 @@ memoRouter
     .delete(
         '/:contentId/:memoId',
         catchAsync(async (req, res) => {
+            const userId = req.user.id;
             const { contentId, memoId } = req.params;
 
-            const scrapedContent = await ScrapedContent.findById(contentId);
+            const scrapedContent = await ScrapedContent.findOne({
+                _id: contentId,
+                userId,
+                isDeleted: false,
+            });
             if (!scrapedContent) {
                 throw new ContentNotFoundException();
             }
