@@ -88,6 +88,18 @@ export class ErrorCode {
         StatusCodes.NOT_FOUND
     );
 
+    // Classification
+    public static readonly classificationFailed = new ErrorCode(
+        'CF01',
+        'Classification Failed.',
+        StatusCodes.INTERNAL_SERVER_ERROR
+    );
+    public static readonly personalClassifierNotFound = new ErrorCode(
+        'CF02',
+        'Personal Classifier Not Found.',
+        StatusCodes.NOT_FOUND
+    );
+
     // External API
     public static readonly summarizeFailed = new ErrorCode(
         'E01',

@@ -9,6 +9,11 @@ import { ScraperFactory } from '../../libs/scraper/scraper.factory';
 import { getAISummarize } from '../../libs/summarize';
 import { AlreadyScrapedException } from '../../errors/exceptions/scraper/already-scraped.exception';
 import { combineArrays } from '../../utils/array';
+import {
+    checkPersonalClassifier,
+    classifyWithPersonalClassifier,
+    classifyWithUniversalClassifier,
+} from '../../libs/classify';
 
 const scrapeRouter = Router();
 const logger = new Logger(__filename);
@@ -86,6 +91,15 @@ scrapeRouter.post(
         );
         logger.info(`summarized content: ${summary}`);
 
+        const { isExist: isPersonalClassifierExist } =
+            await checkPersonalClassifier(userId);
+        const classifierFunction = isPersonalClassifierExist
+            ? classifyWithPersonalClassifier
+            : classifyWithUniversalClassifier;
+
+        const { predicted_class } = await classifierFunction(userId, summary);
+        const classifierTags: string[] = [predicted_class];
+
         const scrapedContent = new ScrapedContent({
             userId,
             url,
@@ -93,7 +107,7 @@ scrapeRouter.post(
             title: scrapedResult.title,
             content: scrapedResult.content,
             summary: summary,
-            tags: combineArrays(scrapedResult.tags, aiTags),
+            tags: combineArrays(scrapedResult.tags, aiTags, classifierTags),
             readTime: 5,
         });
         await scrapedContent.save();
